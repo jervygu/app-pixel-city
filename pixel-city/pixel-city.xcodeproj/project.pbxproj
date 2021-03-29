@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		111A20A92611A23E00827460 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A20A82611A23E00827460 /* PhotoCell.swift */; };
 		111A20AC2611A6B200827460 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A20AB2611A6B200827460 /* Constants.swift */; };
+		111A20B32611DA5D00827460 /* PopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A20B22611DA5D00827460 /* PopVC.swift */; };
 		11C03E9D2611871700A5318D /* DroppaplePin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C03E9C2611871600A5318D /* DroppaplePin.swift */; };
 		11F78A2726115A0600247A5B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F78A2626115A0600247A5B /* AppDelegate.swift */; };
 		11F78A2926115A0600247A5B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F78A2826115A0600247A5B /* SceneDelegate.swift */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		111A20A82611A23E00827460 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		111A20AB2611A6B200827460 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		111A20B22611DA5D00827460 /* PopVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopVC.swift; sourceTree = "<group>"; };
 		11C03E9C2611871600A5318D /* DroppaplePin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroppaplePin.swift; sourceTree = "<group>"; };
 		11F78A2326115A0600247A5B /* pixel-city.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pixel-city.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11F78A2626115A0600247A5B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				11F78A2A26115A0600247A5B /* MapVC.swift */,
+				111A20B22611DA5D00827460 /* PopVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 			files = (
 				11F78A2B26115A0600247A5B /* MapVC.swift in Sources */,
 				111A20A92611A23E00827460 /* PhotoCell.swift in Sources */,
+				111A20B32611DA5D00827460 /* PopVC.swift in Sources */,
 				11F78A2726115A0600247A5B /* AppDelegate.swift in Sources */,
 				11F78A2926115A0600247A5B /* SceneDelegate.swift in Sources */,
 				11C03E9D2611871700A5318D /* DroppaplePin.swift in Sources */,

@@ -86,6 +86,35 @@
             </objects>
             <point key="canvasLocation" x="18.840579710144929" y="93.750000000000014"/>
         </scene>
+        <!--PopVC-->
+        <scene sceneID="zxu-XM-9Pu">
+            <objects>
+                <viewController storyboardIdentifier="PopVC" id="4Ir-zU-8Ti" customClass="PopVC" customModule="pixel_city" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qHI-Dq-Hc4">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J1I-SQ-yvx">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="LTR-Ik-Yv4"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="J1I-SQ-yvx" secondAttribute="trailing" id="H9j-hM-oZh"/>
+                            <constraint firstAttribute="bottom" secondItem="J1I-SQ-yvx" secondAttribute="bottom" id="NIK-f8-ABB"/>
+                            <constraint firstItem="J1I-SQ-yvx" firstAttribute="top" secondItem="qHI-Dq-Hc4" secondAttribute="top" id="Uol-gd-lyN"/>
+                            <constraint firstItem="J1I-SQ-yvx" firstAttribute="leading" secondItem="qHI-Dq-Hc4" secondAttribute="leading" id="mhS-rQ-AFd"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="popImgView" destination="J1I-SQ-yvx" id="PSl-vd-Mh6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FbV-j4-2jZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="742" y="93"/>
+        </scene>
     </scenes>
     <resources>
         <image name="locationButton" width="67" height="67"/>
