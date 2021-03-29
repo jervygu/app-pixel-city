@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapVC: UIViewController {
+class MapVC: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     
@@ -25,6 +25,15 @@ class MapVC: UIViewController {
         locationManager.delegate = self
         
         configureLocationServices()
+        addDoubleTap()
+    }
+    
+    func addDoubleTap() {
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(dropPin(sender:)))
+        doubleTap.numberOfTapsRequired = 2
+        doubleTap.delegate = self
+        
+        mapView.addGestureRecognizer(doubleTap)
     }
 
 
@@ -39,6 +48,20 @@ class MapVC: UIViewController {
 
 
 extension MapVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppaplePin")
+        
+        pinAnnotation.pinTintColor = #colorLiteral(red: 0.9411764706, green: 0.5764705882, blue: 0.168627451, alpha: 1)
+        pinAnnotation.animatesDrop = true
+        
+        return pinAnnotation
+    }
+    
+    
     func centerMapOnUserLocation() {
         guard let coordinate = locationManager.location?.coordinate else { return }
         
@@ -49,6 +72,29 @@ extension MapVC: MKMapViewDelegate {
         
         mapView.setRegion(coordinateRegion, animated: true)
     }
+    
+    @objc func dropPin(sender: UITapGestureRecognizer) {
+        
+        removePin()
+        
+        let touchPoint = sender.location(in: mapView)
+        let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+        
+//        print(touchCoordinate)
+        let annotation = DroppaplePin(coordinate: touchCoordinate, identifier: "droppaplePin")
+        mapView.addAnnotation(annotation)
+        
+        let coordinateRegion = MKCoordinateRegion(center: touchCoordinate, latitudinalMeters: regionRadius * 2.0, longitudinalMeters: regionRadius * 2.0)
+        
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func removePin() {
+        for annotation in mapView.annotations{
+            mapView.removeAnnotation(annotation)
+        }
+    }
+    
 }
 
 extension MapVC: CLLocationManagerDelegate {

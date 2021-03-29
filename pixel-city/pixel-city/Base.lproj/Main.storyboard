@@ -33,7 +33,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.94117647058823528" green="0.57647058823529407" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.94117647058823528" green="0.57647058823529407" blue="0.16862745098039217" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="uke-bb-FOV" firstAttribute="top" secondItem="uNK-q4-AWb" secondAttribute="top" constant="39" id="JY4-sy-fA1"/>
                                     <constraint firstAttribute="height" constant="70" id="NRm-t7-S0r"/>
