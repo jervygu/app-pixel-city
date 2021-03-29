@@ -33,6 +33,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     var collectionView : UICollectionView?
     
     var imageUrlArray = [String]()
+    var imageArray = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +76,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func animateViewDown() {
+        cancelAllSessions()
+        
         pullUpViewHeightConstraint.constant = 0
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
@@ -100,11 +103,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     func addProgressLbl() {
         progressLbl = UILabel()
         progressLbl?.frame = CGRect(x: (screeSize.width / 2) - 120, y: 155, width: 240, height: 40)
-        progressLbl?.font = UIFont(name: "Avenir Next", size: 18)
+        progressLbl?.font = UIFont(name: "Avenir Next", size: 14)
         progressLbl?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         progressLbl?.textAlignment = .center
-        
-        progressLbl?.text = "12/40 PHOTOS LOADED"
+//        progressLbl?.text = "12/40 PHOTOS LOADED"
         
         collectionView?.addSubview(progressLbl!)
     }
@@ -157,6 +159,8 @@ extension MapVC: MKMapViewDelegate {
         resetSpinner()
         removeProgressLbl()
         
+        cancelAllSessions()
+        
         
         let touchPoint = sender.location(in: mapView)
         let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
@@ -174,10 +178,24 @@ extension MapVC: MKMapViewDelegate {
         addSpinner()
         addProgressLbl()
         
-        
 //        print(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40))
-        retriveUrls(forAnnotation: annotation) { (true) in
-            print(self.imageUrlArray)
+        
+        
+        retriveUrls(forAnnotation: annotation) { (finished) in
+//            print(self.imageUrlArray)
+            if finished {
+                self.retrieveImages { (finished) in
+                    if finished {
+                        self.resetSpinner()
+                        self.removeProgressLbl()
+                        
+                        
+                        //hide spinner
+                        //hide label
+                        //reload collection view
+                    }
+                }
+            }
         }
         
     }
@@ -188,19 +206,17 @@ extension MapVC: MKMapViewDelegate {
         }
     }
     
-    func retriveUrls(forAnnotation annotation: DroppaplePin, handler: @escaping(_ status: Bool) -> ()) {
+    func retriveUrls(forAnnotation annotation: DroppaplePin, handler: @escaping(_ isSuccess: Bool) -> ()) {
         imageUrlArray = []
         
         AF.request(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40)).responseJSON { (response) in
             
-//            guard let json = response.result.value as? Dictionary<String, AnyObject> else { return } //  old way
+//            guard let json = response.result.value as? Dictionary<String, AnyObject> else { return }  // oldway, deprecated in AF 5
             
             switch response.result {
             case .success(let value):
-                let json = value as? Dictionary<String, AnyObject>
-                
-                let photosDict = json!["photos"] as! Dictionary<String, AnyObject>
-                
+                guard let json = value as? Dictionary<String, AnyObject> else { return }
+                let photosDict = json["photos"] as! Dictionary<String, AnyObject>
                 let photosDictArray = photosDict["photo"] as! [Dictionary<String, AnyObject>]
                 
                 for photo in photosDictArray {
@@ -211,11 +227,39 @@ extension MapVC: MKMapViewDelegate {
                 handler(true)
             case .failure(let error):
                 print(error)
+                
                 handler(false)
             }
-            
         }
+    }
+    
+    func retrieveImages(handler: @escaping(_ isSuccess: Bool) -> ()) {
+        imageArray = []
         
+        for url in imageUrlArray {
+            AF.request(url).responseImage { (response) in
+                
+                switch response.result {
+                case .success(let value):
+                    let image = value
+                    self.imageArray.append(image)
+                    
+                    self.progressLbl?.text = "\(self.imageArray.count)/40 Images downloaded.."
+                    
+                    if self.imageArray.count == self.imageUrlArray.count {
+                        handler(true)
+                    }
+                    
+                case .failure(let error):
+                    print(error)
+                    handler(false)
+                }
+            }
+        }
+    }
+    
+    func cancelAllSessions() {
+        Alamofire.Session.default.cancelAllRequests()
     }
     
 }
