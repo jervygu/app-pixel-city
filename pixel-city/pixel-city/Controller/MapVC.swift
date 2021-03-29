@@ -51,6 +51,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         
         collectionView?.backgroundColor = #colorLiteral(red: 0.9590949416, green: 0.6425344348, blue: 0.2168852091, alpha: 1)
         
+//        for 3dtouch peek and pop
+        registerForPreviewing(with: self, sourceView: collectionView!)
+        
         pullUpView.addSubview(collectionView!)
     }
     
@@ -309,6 +312,23 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
         
         present(popVC, animated: true, completion: nil)
     }
-    
-     
+}
+
+// 3d touch peek and pop
+
+extension MapVC: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = collectionView?.indexPathForItem(at: location), let cell = collectionView?.cellForItem(at: indexPath) else { return nil }
+        guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return nil }
+
+        popVC.initData(forImage: imageArray[indexPath.row])
+//        previewingContext.sourceRect = cell.contentView.frame
+        previewingContext.sourceRect = cell.contentView.frame
+        return popVC
+
+    }
+
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
+    }
 }
