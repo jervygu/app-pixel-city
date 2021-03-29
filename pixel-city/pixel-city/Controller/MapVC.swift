@@ -8,6 +8,8 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Alamofire
+import AlamofireImage
 
 class MapVC: UIViewController, UIGestureRecognizerDelegate {
 
@@ -30,6 +32,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     var flowLayout = UICollectionViewFlowLayout()
     var collectionView : UICollectionView?
     
+    var imageUrlArray = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +48,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         collectionView?.delegate = self
         collectionView?.dataSource = self
         
-        collectionView?.backgroundColor = #colorLiteral(red: 0.2588235294, green: 0.3294117647, blue: 0.7254901961, alpha: 1)
+        collectionView?.backgroundColor = #colorLiteral(red: 0.9590949416, green: 0.6425344348, blue: 0.2168852091, alpha: 1)
         
         pullUpView.addSubview(collectionView!)
     }
@@ -172,13 +175,47 @@ extension MapVC: MKMapViewDelegate {
         addProgressLbl()
         
         
-        print(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40))
+//        print(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40))
+        retriveUrls(forAnnotation: annotation) { (true) in
+            print(self.imageUrlArray)
+        }
+        
     }
     
     func removePin() {
         for annotation in mapView.annotations{
             mapView.removeAnnotation(annotation)
         }
+    }
+    
+    func retriveUrls(forAnnotation annotation: DroppaplePin, handler: @escaping(_ status: Bool) -> ()) {
+        imageUrlArray = []
+        
+        AF.request(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40)).responseJSON { (response) in
+            
+//            guard let json = response.result.value as? Dictionary<String, AnyObject> else { return } //  old way
+            
+            switch response.result {
+            case .success(let value):
+                let json = value as? Dictionary<String, AnyObject>
+                
+                let photosDict = json!["photos"] as! Dictionary<String, AnyObject>
+                
+                let photosDictArray = photosDict["photo"] as! [Dictionary<String, AnyObject>]
+                
+                for photo in photosDictArray {
+                    let postUrl = "https://live.staticflickr.com/\(photo["server"]!)/\(photo["id"]!)_\(photo["secret"]!)_c_d.jpg"
+                    self.imageUrlArray.append(postUrl)
+                }
+                
+                handler(true)
+            case .failure(let error):
+                print(error)
+                handler(false)
+            }
+            
+        }
+        
     }
     
 }
