@@ -34,6 +34,11 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     
     var imageUrlArray = [String]()
     var imageArray = [UIImage]()
+    var imageTitleArray = [String]()
+    var imageDescArray = [String]()
+    var imageOwnerArray = [String]()
+    var imageDateArray = [String]()
+    var imageViewsArray = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -166,6 +171,7 @@ extension MapVC: MKMapViewDelegate {
         
         imageUrlArray = []
         imageArray = []
+        imageTitleArray = []
         
         collectionView?.reloadData()
         
@@ -189,7 +195,7 @@ extension MapVC: MKMapViewDelegate {
 //        print(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40))
         
         
-        retriveUrls(forAnnotation: annotation) { (finished) in
+        retrieveUrls(forAnnotation: annotation) { (finished) in
 //            print(self.imageUrlArray)
             if finished {
                 self.retrieveImages { (finished) in
@@ -205,7 +211,6 @@ extension MapVC: MKMapViewDelegate {
                 }
             }
         }
-        
     }
     
     func removePin() {
@@ -214,7 +219,7 @@ extension MapVC: MKMapViewDelegate {
         }
     }
     
-    func retriveUrls(forAnnotation annotation: DroppaplePin, handler: @escaping(_ isSuccess: Bool) -> ()) {
+    func retrieveUrls(forAnnotation annotation: DroppaplePin, handler: @escaping(_ isSuccess: Bool) -> ()) {
         
         AF.request(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40)).responseJSON { (response) in
             
@@ -223,22 +228,43 @@ extension MapVC: MKMapViewDelegate {
             switch response.result {
             case .success(let value):
                 guard let json = value as? Dictionary<String, AnyObject> else { return }
+                
+                print("responseJSON ==> \(json)") // need to upgrade of functionality I.E. photo infos.., Title, date uploaded,, etc
+                
                 let photosDict = json["photos"] as! Dictionary<String, AnyObject>
                 let photosDictArray = photosDict["photo"] as! [Dictionary<String, AnyObject>]
                 
                 for photo in photosDictArray {
                     let postUrl = "https://live.staticflickr.com/\(photo["server"]!)/\(photo["id"]!)_\(photo["secret"]!)_c_d.jpg"
+                    
+                    let postTitle = "\(photo["title"]!)"
+                    
+                    let postDesc = "\(photo["description"]!["_content"]! ?? "")"
+                    
+                    let postDate = "Date Taken: \(photo["datetaken"]!)"
+                    
+                    let postOwner = "Posted by: \(photo["ownername"]!)"
+                    
+                    let postViews = "\(photo["views"]!)"
+                    
+                    
+                    
                     self.imageUrlArray.append(postUrl)
+                    self.imageTitleArray.append(postTitle)
+                    self.imageDescArray.append(postDesc)
+                    self.imageDateArray.append(postDate)
+                    self.imageOwnerArray.append(postOwner)
+                    self.imageViewsArray.append(postViews)
                 }
-                
                 handler(true)
+                
             case .failure(let error):
                 print(error)
-                
                 handler(false)
             }
         }
     }
+      
     
     func retrieveImages(handler: @escaping(_ isSuccess: Bool) -> ()) {
         
@@ -247,6 +273,7 @@ extension MapVC: MKMapViewDelegate {
                 
                 switch response.result {
                 case .success(let value):
+                    
                     let image = value
                     self.imageArray.append(image)
                     
@@ -301,6 +328,7 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let imageFromIndex = imageArray[indexPath.row]
         
         let imageView = UIImageView(image: imageFromIndex)
+        
         cell.addSubview(imageView)
         
         return cell
@@ -308,7 +336,11 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return }
-        popVC.initData(forImage: imageArray[indexPath.row])
+        
+//        popVC.initData(forImage: imageArray[indexPath.row])
+//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row])
+        
+        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
         
         present(popVC, animated: true, completion: nil)
     }
@@ -321,7 +353,12 @@ extension MapVC: UIViewControllerPreviewingDelegate {
         guard let indexPath = collectionView?.indexPathForItem(at: location), let cell = collectionView?.cellForItem(at: indexPath) else { return nil }
         guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return nil }
 
-        popVC.initData(forImage: imageArray[indexPath.row])
+//        popVC.initData(forImage: imageArray[indexPath.row])
+//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row])
+        
+        
+        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
+        
 //        previewingContext.sourceRect = cell.contentView.frame
         previewingContext.sourceRect = cell.contentView.frame
         return popVC
