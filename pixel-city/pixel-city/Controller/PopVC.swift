@@ -30,7 +30,6 @@ class PopVC: UIViewController, UIGestureRecognizerDelegate {
         self.passedDesc = desc
         self.passedPostBy = postBy
         self.passedPostDate = date
-        
     }
     
     override func viewDidLoad() {
@@ -42,11 +41,8 @@ class PopVC: UIViewController, UIGestureRecognizerDelegate {
         popImgPostedBy.text = passedPostBy
         popImgDate.text = passedPostDate
         
-        
         popImgInfoView.layer.cornerRadius = 7.5
         popImgInfoView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 0.5036386986)
-        
-//        rgb(99, 110, 114)
         
         addDoubleTap()
     }

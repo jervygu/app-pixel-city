@@ -32,9 +32,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     var progressLbl : UILabel?
     
     var flowLayout = UICollectionViewFlowLayout()
-//    var collectionView : UICollectionView? // old
-    
-    
     
     var imageUrlArray = [String]()
     var imageArray = [UIImage]()
@@ -53,13 +50,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         configureLocationServices()
         addDoubleTap()
         
-//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
-//        collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: "photoCell")
-//        collectionView?.delegate = self
-//        collectionView?.dataSource = self
-//        collectionView?.backgroundColor = #colorLiteral(red: 0.9590949416, green: 0.6425344348, blue: 0.2168852091, alpha: 1)
-        
-        
         pullUpImgCollection.delegate = self
         pullUpImgCollection.dataSource = self
         pullUpImgCollection.backgroundColor = #colorLiteral(red: 0.9590949416, green: 0.6425344348, blue: 0.2168852091, alpha: 1)
@@ -67,7 +57,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
 //        for 3dtouch peek and pop
         registerForPreviewing(with: self, sourceView: pullUpImgCollection!)
         
-//        pullUpView.addSubview(collectionView!)
         pullUpView.addSubview(pullUpImgCollection!)
     }
     
@@ -108,7 +97,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         spinner?.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         spinner?.startAnimating()
         
-//        collectionView?.addSubview(spinner!)
         pullUpImgCollection.addSubview(spinner!)
     }
     
@@ -126,7 +114,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         progressLbl?.textAlignment = .center
 //        progressLbl?.text = "12/40 PHOTOS LOADED"
         
-//        collectionView?.addSubview(progressLbl!)
         pullUpImgCollection.addSubview(progressLbl!)
     }
     
@@ -164,9 +151,6 @@ extension MapVC: MKMapViewDelegate {
     func centerMapOnUserLocation() {
         guard let coordinate = locationManager.location?.coordinate else { return }
         
-        
-//        let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinate, regionRadius * 2.0, regionRadius * 2.0) // old used in devslope
-        
         let coordinateRegion = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius * 2.0, longitudinalMeters: regionRadius * 2.0)
         
         mapView.setRegion(coordinateRegion, animated: true)
@@ -183,6 +167,10 @@ extension MapVC: MKMapViewDelegate {
         imageUrlArray = []
         imageArray = []
         imageTitleArray = []
+        imageDescArray = []
+        imageOwnerArray = []
+        imageDateArray = []
+        imageViewsArray = []
         
 //        collectionView?.reloadData()
         pullUpImgCollection.reloadData()
@@ -204,9 +192,6 @@ extension MapVC: MKMapViewDelegate {
         
         animateViewUp()
         
-//        print(flickrUrl(forApiKey: apiKey, withAnnotation: annotation, andNumberOfPhotos: 40))
-        
-        
         retrieveUrls(forAnnotation: annotation) { (finished) in
 //            print(self.imageUrlArray)
             if finished {
@@ -214,12 +199,8 @@ extension MapVC: MKMapViewDelegate {
                     if finished {
                         self.resetSpinner()
                         self.removeProgressLbl()
-//                        self.collectionView?.reloadData()
                         self.pullUpImgCollection.reloadData()
                         
-                        //hide spinner
-                        //hide label
-                        //reload collection view
                     }
                 }
             }
@@ -252,7 +233,7 @@ extension MapVC: MKMapViewDelegate {
                     
                     let postTitle = "\(photo["title"]!)"
                     
-                    let postDesc = "\(photo["description"]!["_content"]! ?? "")"
+                    let postDesc = "\(photo["description"]!["_content"]! ?? "No description available...")"
                     
                     let postDate = "\(photo["datetaken"]!)"
                     
@@ -289,8 +270,8 @@ extension MapVC: MKMapViewDelegate {
                     
                     let image = value
                     self.imageArray.append(image)
-                    
                     self.progressLbl?.text = "\(self.imageArray.count)/50 Images downloaded.."
+                    
                     
                     if self.imageArray.count == self.imageUrlArray.count {
                         handler(true)
@@ -300,8 +281,17 @@ extension MapVC: MKMapViewDelegate {
                     print(error)
                     handler(false)
                 }
+                
+                print(self.imageArray.count,
+                      self.imageUrlArray.count,
+                      self.imageTitleArray.count,
+                      self.imageDescArray.count,
+                      self.imageOwnerArray.count,
+                      self.imageDateArray.count,
+                      self.imageViewsArray.count)
             }
         }
+        
     }
     
     func cancelAllSessions() {
@@ -337,12 +327,12 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "customPhotoCell", for: indexPath) as? CustomPhotoCell else { return UICollectionViewCell() }
         
         let imageFromIndex = imageArray[indexPath.row]
+        
 //        let imageView = UIImageView(image: imageFromIndex)
         let imageViewsCount = imageViewsArray[indexPath.row]
         
         cell.pullUpImg.image = imageFromIndex
         cell.pullUpImgViewCounts.text = imageViewsCount
-        
         
         cell.contentView.layer.cornerRadius = 5
         cell.contentView.layer.borderWidth = 1.0
@@ -364,10 +354,17 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return }
         
-        //        popVC.initData(forImage: imageArray[indexPath.row])
-        //        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row])
+        let img = imageArray[indexPath.row]
+        let imgTtl = imageTitleArray[indexPath.row]
+        let imgDesc = imageDescArray[indexPath.row]
+        let imgOwner = imageOwnerArray[indexPath.row]
+        let imgDate = imageDateArray[indexPath.row]
         
-        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
+        
+//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
+        
+        popVC.initData(forImage: img, forTitle: imgTtl, forDesc: imgDesc, forPostBy: imgOwner, forPostDate: imgDate)
+        print(img, imgTtl, imgDesc, imgOwner, imgDate)
         
         present(popVC, animated: true, completion: nil)
     }
@@ -377,49 +374,12 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollect
         let screenSize = UIScreen.main.bounds
         
         return CGSize(width: (screenSize.width / 8) - 5.0, height: (screenSize.width / 8) - 5.0)
-//        return CGSize(width: 50, height: 50)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 6.0
     }
 }
-
-//extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
-//
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return  1
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return imageArray.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCell else { return UICollectionViewCell() }
-//
-//        let imageFromIndex = imageArray[indexPath.row]
-//
-//        let imageView = UIImageView(image: imageFromIndex)
-//
-//        cell.addSubview(imageView)
-//
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return }
-//
-////        popVC.initData(forImage: imageArray[indexPath.row])
-////        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row])
-//
-//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
-//
-//        present(popVC, animated: true, completion: nil)
-//    }
-//}
-//
 
 
 // 3d touch peek and pop
@@ -431,13 +391,17 @@ extension MapVC: UIViewControllerPreviewingDelegate {
         guard let indexPath = pullUpImgCollection.indexPathForItem(at: location), let cell = pullUpImgCollection?.cellForItem(at: indexPath) else { return nil }
         guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC else { return nil }
 
-//        popVC.initData(forImage: imageArray[indexPath.row])
-//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row])
+        let img = imageArray[indexPath.row]
+        let imgTtl = imageTitleArray[indexPath.row]
+        let imgDesc = imageDescArray[indexPath.row]
+        let imgOwner = imageOwnerArray[indexPath.row]
+        let imgDate = imageDateArray[indexPath.row]
+        
+        
+//        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
+        
+        popVC.initData(forImage: img, forTitle: imgTtl, forDesc: imgDesc, forPostBy: imgOwner, forPostDate: imgDate)
 
-
-        popVC.initData(forImage: imageArray[indexPath.row], forTitle: imageTitleArray[indexPath.row], forDesc: imageDescArray[indexPath.row], forPostBy: imageOwnerArray[indexPath.row], forPostDate: imageDateArray[indexPath.row])
-
-//        previewingContext.sourceRect = cell.contentView.frame
         previewingContext.sourceRect = cell.contentView.frame
         return popVC
 
