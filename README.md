@@ -5,7 +5,7 @@ A beginners swift 5 project, see the photos around your area or tap to the locat
 ## Features
 - Allow the user to use their location and see the images around 1km radius.
 - Swipe around and tap to the map you want to visit and see the photos around that location.
-- See the caption, likes and the moment captured by owner.
+- See the caption, views and the moment captured by owner.
 
 
 ## Dependencies
