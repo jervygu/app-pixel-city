@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsUserLocation="YES" showsCompass="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZZ0-w3-2Oc">
-                                <rect key="frame" x="0.0" y="0.0" width="390" height="544"/>
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                             </mapView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uNK-q4-AWb">
                                 <rect key="frame" x="0.0" y="0.0" width="390" height="70"/>
@@ -42,7 +42,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PYp-la-ljs">
-                                <rect key="frame" x="320" y="474" width="50" height="50"/>
+                                <rect key="frame" x="320" y="774" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="89y-zX-CCU"/>
                                     <constraint firstAttribute="height" constant="50" id="T6B-50-El0"/>
@@ -53,9 +53,9 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DGM-dS-rVN" userLabel="Colletion View">
-                                <rect key="frame" x="0.0" y="544" width="390" height="300"/>
+                                <rect key="frame" x="0.0" y="844" width="390" height="0.0"/>
                                 <subviews>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hPJ-ml-Cxr">
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hPJ-ml-Cxr">
                                         <rect key="frame" x="2" y="2" width="386" height="296"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="HBn-Et-AIL">
@@ -117,7 +117,7 @@
                                     <constraint firstItem="hPJ-ml-Cxr" firstAttribute="top" secondItem="DGM-dS-rVN" secondAttribute="top" constant="2" id="3Xe-uq-4pE"/>
                                     <constraint firstItem="hPJ-ml-Cxr" firstAttribute="leading" secondItem="DGM-dS-rVN" secondAttribute="leading" constant="2" id="MEk-fV-eoi"/>
                                     <constraint firstAttribute="trailing" secondItem="hPJ-ml-Cxr" secondAttribute="trailing" constant="2" id="bTk-55-6jO"/>
-                                    <constraint firstAttribute="height" constant="300" id="k4S-7f-xz2"/>
+                                    <constraint firstAttribute="height" id="k4S-7f-xz2"/>
                                     <constraint firstAttribute="bottom" secondItem="hPJ-ml-Cxr" secondAttribute="bottom" constant="2" id="rh0-TU-qXG"/>
                                 </constraints>
                             </view>
